@@ -603,8 +603,8 @@
                 if (e) {
                     const err = document.getElementById('gatekeeper-error');
                     if (err) err.classList.remove('hidden');
-                    document.getElementById('app-app-gatekeeper-password').value = '';
-                    document.getElementById('app-app-gatekeeper-password').focus();
+                    document.getElementById('app-gatekeeper-password').value = '';
+                    document.getElementById('app-gatekeeper-password').focus();
                 }
             }
         };
@@ -937,9 +937,8 @@
                     <div class="flex flex-wrap justify-between items-center gap-4 uppercase bg-white dark:bg-darkCard p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-850">
                         <h2 class="text-xl font-black text-slate-800 dark:text-slate-100 flex items-center gap-2"><i data-lucide="boxes" class="text-blue-500"></i> STOK YÖNETİMİ</h2>
                         <div class="flex flex-wrap gap-2 ml-auto">
-                            <button onclick="window.handleUndo()" class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 p-2.5 rounded-xl transition-all shadow-sm hover:bg-slate-200" title="GERİ AL"><i data-lucide="rotate-ccw" size="18"></i></button>
-                            <button onclick="window.handleBulkDelete()" class="bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400 p-2.5 rounded-xl transition-all shadow-sm hover:bg-red-100" title="SEÇİLENLERİ SİL"><i data-lucide="list-x" size="18"></i></button>
-                            <button onclick="window.handleDeleteAll()" class="bg-slate-800 dark:bg-slate-700 text-white p-2.5 rounded-xl transition-all shadow-sm hover:bg-slate-900" title="TÜMÜNÜ TEMİZLE"><i data-lucide="trash-2" size="18"></i></button>
+                            <button onclick="window.handleUndo()" class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 p-2.5 px-4 rounded-xl transition-all shadow-sm hover:bg-slate-200 flex items-center gap-2 font-black text-xs tracking-widest" title="GERİ AL"><i data-lucide="rotate-ccw" size="18"></i> <span class="hidden sm:inline">GERİ AL</span></button>
+                            <button onclick="window.handleBulkDelete()" class="bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400 p-2.5 px-4 rounded-xl transition-all shadow-sm hover:bg-red-100 flex items-center gap-2 font-black text-xs tracking-widest" title="SEÇİLENLERİ SİL"><i data-lucide="trash-2" size="18"></i> <span class="hidden sm:inline">SİL</span></button>
                             <label class="bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 dark:text-emerald-400 p-2.5 rounded-xl cursor-pointer transition-all flex items-center justify-center shadow-sm font-black text-xs gap-2" title="EXCEL YÜKLE">
                                 <i data-lucide="file-spreadsheet" size="18"></i>
                                 <span class="hidden sm:inline">İÇE AKTAR</span>
@@ -1649,17 +1648,6 @@
                     boxes.forEach(cb => { const id = cb.getAttribute('data-id'); deletedItems.push(window.state.inventory.find(i => i.id === id)); batch.delete(doc(db, 'artifacts', appId, 'public', 'data', 'inventory', id)); });
                     window.state.lastAction = { type: 'BULK_DELETE', data: deletedItems }; await batch.commit(); window.showNotification("SEÇİLEN TÜMÜ SİLİNDİ."); window.closeSmoothly('delete-modal');
                 } catch (err) { window.showNotification("KAPSAMLI SİLME HATASI!", "error"); }
-            };
-        };
-
-        window.handleDeleteAll = () => {
-            if (window.state.inventory.length === 0) { window.showNotification("SİLİNECEK KAYIT YOK!", "error"); return; }
-            const btn = document.getElementById('confirm-delete-btn'); document.getElementById('delete-modal-title').textContent = "TÜM ENVENTERİ SİL?"; window.openSmoothly('delete-modal');
-            btn.onclick = async () => {
-                try {
-                    const batch = writeBatch(db); window.state.lastAction = { type: 'BULK_DELETE', data: [...window.state.inventory] };
-                    window.state.inventory.forEach(i => batch.delete(doc(db, 'artifacts', appId, 'public', 'data', 'inventory', i.id))); await batch.commit(); window.showNotification("TÜM ENVANTER TEMİZLENDİ."); window.closeSmoothly('delete-modal');
-                } catch (err) { window.showNotification("TEMİZLEME BAŞARISIZ OLUŞTU!", "error"); }
             };
         };
 
